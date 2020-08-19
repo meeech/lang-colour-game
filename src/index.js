@@ -4,6 +4,9 @@ import './index.css';
 import { random, reduce, shuffle } from 'lodash';
 const yaml = require('js-yaml');
 
+// How many colour swatches to choose from
+const picks = 5;
+
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
@@ -60,7 +63,6 @@ const Main = (props) => {
     return <></>;
   }
 
-  const picks = 4;
   const nextRound = shuffle(colours).slice(0, picks);
   const toGuess = nextRound[random(picks - 1)];
   return (
