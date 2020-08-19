@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import { random, reduce, shuffle } from 'lodash';
-const yaml = require('js-yaml');
+import './index.css';
+import yaml from 'js-yaml';
 
 // How many colour swatches to choose from
 const picks = 5;
