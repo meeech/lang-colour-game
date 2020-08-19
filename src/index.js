@@ -16,7 +16,16 @@ const ColourList = ({ colours }) => {
 };
 
 const Header = ({ toGuess }) => {
-  return <div className="to-guess">{toGuess.name}</div>;
+  return (
+    <div className="header">
+      <div className="to-guess">{toGuess.name}</div>
+      <div className="scorecard">
+        <div>round: #</div>
+        <div>correct: #</div>
+        <div>streak: #</div>
+      </div>
+    </div>
+  );
 };
 
 const Swatch = ({ colour, name }) => {
