@@ -27,12 +27,12 @@ const Main = (props) => {
   const [colours, setColours] = useState([]);
 
   useEffect(() => {
-    if (colours.length > 0) {
-      console.log(`Effect called, but we already have our colours: ${colours.length}`);
-      return;
-    }
-
     async function fetchData() {
+      if (colours.length > 0) {
+        console.log(`Effect called, but we already have our colours: ${colours.length}`);
+        return colours;
+      }
+
       const response = await fetch(languages);
       if (!response.ok) {
         console.error(response);
@@ -53,6 +53,7 @@ const Main = (props) => {
         []
       );
     }
+
     fetchData().then(function (response) {
       setColours(response);
     });
@@ -70,7 +71,7 @@ const Main = (props) => {
       <div>
         <Header toGuess={toGuess} />
       </div>
-      <div>
+      <div className="container">
         <ColourList colours={nextRound} />
       </div>
     </>
