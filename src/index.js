@@ -9,12 +9,18 @@ const yaml = require('js-yaml');
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
+const Swatch = ({ colour, name }) => {
+  return (
+    <div className="swatch" style={{ backgroundColor: colour }}>
+      {name}
+    </div>
+  );
+};
+
 const ColourList = (props) => {
   const [colours, setColours] = useState([]);
   const items = colours.map((colour) => (
-    <li className="swatch" style={{ backgroundColor: colour.colour }} key={colour.name}>
-      {colour.name}
-    </li>
+    <Swatch key={colour.name} colour={colour.colour} name={colour.name} />
   ));
 
   useEffect(() => {
@@ -49,15 +55,7 @@ const ColourList = (props) => {
     });
   }, [colours]);
 
-  // useEffect(function () {
-  //   console.log('fetch...');
-  //   // setColours([]);
-  //   return function () {
-  //     console.log('uneffect');
-  //   };
-  // });
-
-  return <ul>{items}</ul>;
+  return <>{items}</>;
 };
 
 const Game = (props) => {
