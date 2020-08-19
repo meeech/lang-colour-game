@@ -25,6 +25,7 @@ const Main = (props) => {
 
   useEffect(() => {
     if (colours.length > 0) {
+      console.log(`Effect called, but we already have our colours: ${colours.length}`);
       return;
     }
 
