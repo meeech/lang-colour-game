@@ -33,7 +33,5 @@
       "last 1 safari version"
     ]
   },
-  "devDependencies": {
-    "icecream": "^0.9.3"
-  }
+  "devDependencies": {}
 }

@@ -1,27 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-
 import './index.css';
-
-import { reduce } from 'lodash';
+import { random, reduce, shuffle } from 'lodash';
 const yaml = require('js-yaml');
 
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
-const Swatch = ({ colour, name }) => {
-  return (
-    <div className="swatch" style={{ backgroundColor: colour }}>
-      {name}
-    </div>
-  );
+const ColourList = ({ colours }) => {
+  const items = colours.map((colour) => <Swatch key={colour.name} colour={colour.colour} />);
+  return <>{items}</>;
 };
 
-const ColourList = (props) => {
+const Header = ({ toGuess }) => {
+  return <div className="to-guess">{toGuess.name}</div>;
+};
+
+const Swatch = ({ colour, name }) => {
+  return <div className="swatch" style={{ backgroundColor: colour }}></div>;
+};
+
+const Main = (props) => {
   const [colours, setColours] = useState([]);
-  const items = colours.map((colour) => (
-    <Swatch key={colour.name} colour={colour.colour} name={colour.name} />
-  ));
 
   useEffect(() => {
     if (colours.length > 0) {
@@ -33,7 +33,6 @@ const ColourList = (props) => {
       if (!response.ok) {
         console.error(response);
       }
-      // const raw = ;
       const parsed = yaml.safeLoad(await response.text());
       return reduce(
         parsed,
@@ -55,18 +54,24 @@ const ColourList = (props) => {
     });
   }, [colours]);
 
-  return <>{items}</>;
-};
+  if (colours.length < 1) {
+    console.log('No colours');
+    return <></>;
+  }
 
-const Game = (props) => {
+  const picks = 4;
+  const nextRound = shuffle(colours).slice(0, picks);
+  const toGuess = nextRound[random(picks - 1)];
   return (
     <>
-      <h1>Game</h1>
       <div>
-        <ColourList />
+        <Header toGuess={toGuess} />
+      </div>
+      <div>
+        <ColourList colours={nextRound} />
       </div>
     </>
   );
 };
 
-ReactDOM.render(<Game />, document.getElementById('root'));
+ReactDOM.render(<Main />, document.getElementById('root'));
