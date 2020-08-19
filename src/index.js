@@ -1,17 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const ColourList = (props) => {
+  const [colours, setColours] = useState([
+    { name: 'blue', hex: '#0000ff' },
+    { name: 'red', hex: '#ff0000' },
+  ]);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+  const items = colours.map((colour) => <li key={colour.name}>{colour.name}</li>);
+
+  useEffect(function () {
+    console.log('effect here....');
+    // setColours([]);
+    return function () {
+      console.log('uneffect');
+    };
+  });
+
+  return <ul>{items}</ul>;
+};
+
+const Game = (props) => {
+  return (
+    <>
+      <h1>Game</h1>
+      <div>
+        <ColourList />
+      </div>
+    </>
+  );
+};
+
+ReactDOM.render(<Game />, document.getElementById('root'));
