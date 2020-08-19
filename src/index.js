@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
+
+import './index.css';
+
 import { reduce } from 'lodash';
 const yaml = require('js-yaml');
 
@@ -8,8 +11,11 @@ const languages =
 
 const ColourList = (props) => {
   const [colours, setColours] = useState([]);
-  console.log(colours, colours.map);
-  const items = colours.map((colour) => <li key={colour.name}>{colour.name}</li>);
+  const items = colours.map((colour) => (
+    <li className="swatch" style={{ backgroundColor: colour.colour }} key={colour.name}>
+      {colour.name}
+    </li>
+  ));
 
   useEffect(() => {
     if (colours.length > 0) {
@@ -21,9 +27,8 @@ const ColourList = (props) => {
       if (!response.ok) {
         console.error(response);
       }
-      const raw = await response.text();
-      const parsed = yaml.safeLoad(raw);
-      // console.log(parsed);
+      // const raw = ;
+      const parsed = yaml.safeLoad(await response.text());
       return reduce(
         parsed,
         (acc, value, key) => {
