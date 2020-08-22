@@ -68,17 +68,25 @@ const Game = (props) => {
   });
   const [toGuess, setToGuess] = useState(blankGuess);
 
+  // THis should just handle a guess guess effect
   useEffect(() => {
     const isWinner = toGuess.name ? toGuess === playerGuess : false;
-    if (!isWinner) {
+    if (!playerGuess.name) {
+      console.log('No guess...');
       return;
     }
 
+    // if (!isWinner) {
+    //   console.log('No winner');
+    //   return;
+    // }
+
+    // winner
     const scUpdate = (previousScorecard) => {
-      const round = previousScorecard.round + 1;
-      const correct = previousScorecard.correct + 1;
+      const correct = isWinner ? previousScorecard.correct + 1 : 0;
+      const round = isWinner ? previousScorecard.round : previousScorecard.round + 1;
       const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
-      return { round, correct, streak };
+      return { correct, round, streak };
     };
     setScorecard(scUpdate);
     setPlayerGuess(blankGuess);
