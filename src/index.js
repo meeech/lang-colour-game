@@ -12,10 +12,16 @@ const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
 const ColourList = ({ colours, setPlayerGuess }) => {
+  console.log('ColourList...');
   const items = colours.map((colour) => (
     <Swatch
       key={colour.name}
       onClick={() => {
+        // fun easter egg
+        console.log(
+          `%c ${colour.name} ${colour.colour}                            `,
+          `color: #000;font-weight:bold; background-color:${colour.colour}`
+        );
         setPlayerGuess(colour);
       }}
       name={colour.name}
@@ -46,10 +52,13 @@ const Game = (props) => {
   // ? This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
   const [colours, setColours] = useState([]);
   const [nextRound, setNextRound] = useState();
-  const [playerGuess, setPlayerGuess] = useState('');
-  const [toGuess, setToGuess] = useState({ name: '', colour: '' });
-  console.log(toGuess);
-  const isWinner = toGuess ? toGuess.name === playerGuess : false;
+  const [playerGuess, setPlayerGuess] = useState({ name: null, colour: null });
+  const [toGuess, setToGuess] = useState({ name: null, colour: null });
+
+  const isWinner = toGuess.name ? toGuess === playerGuess : false;
+
+  if (isWinner) {
+  }
 
   useEffect(() => {
     console.log('useEffect triggered');
