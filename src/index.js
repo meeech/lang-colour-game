@@ -11,17 +11,21 @@ const picks = 5;
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
+// TODO how can this be changed so it subs to playerGuess?
+const logColour = (colour) => {
+  // fun easter egg
+  console.log(
+    `%c ${colour.name} ${colour.colour}                            `,
+    `color: #000;font-weight:bold; background-color:${colour.colour}`
+  );
+};
 const ColourList = ({ colours, setPlayerGuess }) => {
   console.log('ColourList...');
   const items = colours.map((colour) => (
     <Swatch
       key={colour.name}
       onClick={() => {
-        // fun easter egg
-        console.log(
-          `%c ${colour.name} ${colour.colour}                            `,
-          `color: #000;font-weight:bold; background-color:${colour.colour}`
-        );
+        logColour(colour);
         setPlayerGuess(colour);
       }}
       name={colour.name}
