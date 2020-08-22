@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import { each, random, reduce, shuffle, set } from 'lodash';
+import { each, random, reduce, shuffle } from 'lodash';
 import './index.css';
 import yaml from 'js-yaml';
 
 // How many colour swatches to choose from
 const picks = 3;
+
+const blankGuess = { name: null, colour: null };
 
 // TODO copy this to the project directly
 const languages =
@@ -55,8 +57,6 @@ const Swatch = ({ colour, onClick }) => {
 };
 
 const Game = (props) => {
-  const blankGuess = { name: null, colour: null };
-
   // ? This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
   const [colours, setColours] = useState([]);
   const [nextRound, setNextRound] = useState();
@@ -68,7 +68,16 @@ const Game = (props) => {
   });
   const [toGuess, setToGuess] = useState(blankGuess);
 
-  // THis should just handle a guess guess effect
+  const nextTurn = () => {
+    const _next = shuffle(colours).slice(0, picks);
+    console.log('_next', _next);
+    setNextRound(_next);
+    if (_next.length) {
+      setToGuess(_next[random(picks - 1)]);
+    }
+  };
+
+  // THis should just handle a guess
   useEffect(() => {
     const isWinner = toGuess.name ? toGuess === playerGuess : false;
     if (!playerGuess.name) {
@@ -76,12 +85,6 @@ const Game = (props) => {
       return;
     }
 
-    // if (!isWinner) {
-    //   console.log('No winner');
-    //   return;
-    // }
-
-    // winner
     const scUpdate = (previousScorecard) => {
       const correct = isWinner ? previousScorecard.correct + 1 : 0;
       const round = isWinner ? previousScorecard.round : previousScorecard.round + 1;
@@ -89,22 +92,10 @@ const Game = (props) => {
       return { correct, round, streak };
     };
     setScorecard(scUpdate);
+    // Setup next group to guess from
     setPlayerGuess(blankGuess);
-    // blank guess feels wrong having to be in this list- its static
-  }, [blankGuess, playerGuess, toGuess]);
-
-  // Run once to initialize the
-  // useEffect(() => {
-  //   setScorecard({ ...scorecard, round: scorecard.round + 1, streak: 0 });
-  //   if (isWinner) {
-  //     const round = scorecard.round + 1;
-  //     const correct = scorecard.correct + 1;
-  //     const streak = scorecard.streak > correct ? scorecard.streak : correct;
-  //     setScorecard({ round, correct, streak });
-  //     setPlayerGuess({ name: null, colour: null });
-  //   } else {
-  //   }
-  // }, []);
+    nextTurn();
+  }, [playerGuess, toGuess]);
 
   useEffect(() => {
     console.log('useEffect triggered');
@@ -136,15 +127,11 @@ const Game = (props) => {
       );
     }
 
-    fetchData().then((response) => {
-      setColours(response);
-      const _next = shuffle(colours).slice(0, picks);
-      console.log('_next', _next);
-      setNextRound(_next);
-      if (_next.length) {
-        setToGuess(_next[random(picks - 1)]);
-      }
-    });
+    fetchData()
+      .then((_colours) => {
+        setColours(_colours);
+      })
+      .then(nextTurn);
   }, [colours]);
 
   if (colours.length < 1) {
