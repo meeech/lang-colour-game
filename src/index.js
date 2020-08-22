@@ -42,15 +42,18 @@ const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
 };
 
-const Game = (props) => {
-  console.log('start game');
-  console.log(props);
-  return null;
+const game = (colours, setNextRound, setToGuess) => {
+  const nextRound = shuffle(colours).slice(0, picks);
+  setNextRound(nextRound);
+  setToGuess(nextRound[random(picks - 1)]);
 };
 
 const Main = (props) => {
+  // This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
   const [colours, setColours] = useState([]);
+  const [nextRound, setNextRound] = useState();
   const [playerGuess, setPlayerGuess] = useState();
+  const [toGuess, setToGuess] = useState();
 
   useEffect(() => {
     console.log('useEffect triggered');
@@ -82,9 +85,13 @@ const Main = (props) => {
       );
     }
 
-    fetchData().then(function (response) {
-      setColours(response);
-    });
+    fetchData()
+      .then((response) => {
+        setColours(response);
+      })
+      .then(() => {
+        game(colours, setNextRound, setToGuess);
+      });
   }, [colours]);
 
   if (colours.length < 1) {
@@ -92,8 +99,10 @@ const Main = (props) => {
     return <></>;
   }
 
-  const nextRound = shuffle(colours).slice(0, picks);
-  const toGuess = nextRound[random(picks - 1)];
+  if (!toGuess || !nextRound) {
+    console.log(`No toGuess ${toGuess}, no nextRound ${nextRound}`);
+    return <></>;
+  }
   // const isWinner = function (playerGuess) {
   //   return toGuess.name === playerGuess;
   // };
@@ -106,7 +115,6 @@ const Main = (props) => {
   //   // yes
   //   //
   // };
-
   console.log('Main:return/render');
   return (
     <>
@@ -116,7 +124,7 @@ const Main = (props) => {
       <div className="container">
         <ColourList colours={nextRound} setPlayerGuess={setPlayerGuess} />
       </div>
-      <Game toGuess={toGuess} playerGuess={playerGuess} />
+      {/* <Game toGuess={toGuess} playerGuess={playerGuess} /> */}
     </>
   );
 };
