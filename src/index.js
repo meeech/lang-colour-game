@@ -42,18 +42,14 @@ const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
 };
 
-const game = (colours, setNextRound, setToGuess) => {
-  const nextRound = shuffle(colours).slice(0, picks);
-  setNextRound(nextRound);
-  setToGuess(nextRound[random(picks - 1)]);
-};
-
-const Main = (props) => {
-  // This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
+const Game = (props) => {
+  // ? This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
   const [colours, setColours] = useState([]);
   const [nextRound, setNextRound] = useState();
-  const [playerGuess, setPlayerGuess] = useState();
-  const [toGuess, setToGuess] = useState();
+  const [playerGuess, setPlayerGuess] = useState('');
+  const [toGuess, setToGuess] = useState({ name: '', colour: '' });
+  console.log(toGuess);
+  const isWinner = toGuess ? toGuess.name === playerGuess : false;
 
   useEffect(() => {
     console.log('useEffect triggered');
@@ -85,13 +81,15 @@ const Main = (props) => {
       );
     }
 
-    fetchData()
-      .then((response) => {
-        setColours(response);
-      })
-      .then(() => {
-        game(colours, setNextRound, setToGuess);
-      });
+    fetchData().then((response) => {
+      setColours(response);
+      const _next = shuffle(colours).slice(0, picks);
+      console.log('_next', _next);
+      setNextRound(_next);
+      if (_next.length) {
+        setToGuess(_next[random(picks - 1)]);
+      }
+    });
   }, [colours]);
 
   if (colours.length < 1) {
@@ -103,9 +101,6 @@ const Main = (props) => {
     console.log(`No toGuess ${toGuess}, no nextRound ${nextRound}`);
     return <></>;
   }
-  // const isWinner = function (playerGuess) {
-  //   return toGuess.name === playerGuess;
-  // };
 
   // const gameLoop = function () {
   //   //user makes a pick
@@ -129,4 +124,4 @@ const Main = (props) => {
   );
 };
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+ReactDOM.render(<Game />, document.getElementById('root'));
