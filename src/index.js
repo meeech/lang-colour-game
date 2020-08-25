@@ -144,14 +144,6 @@ const Game = (props) => {
     return <></>;
   }
 
-  // const gameLoop = function () {
-  //   //user makes a pick
-  //   // is it a winner?
-  //   // no... reveal name of colour they picked
-  //   // otherwise
-  //   // yes
-  //   //
-  // };
   console.log('Main:return/render');
   return (
     <>
@@ -161,7 +153,6 @@ const Game = (props) => {
       <div className="container">
         <ColourList colours={nextRound} setPlayerGuess={setPlayerGuess} />
       </div>
-      {/* <Game toGuess={toGuess} playerGuess={playerGuess} /> */}
     </>
   );
 };
