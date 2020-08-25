@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { each, random, reduce, shuffle } from 'lodash';
 import './index.css';
@@ -9,6 +9,9 @@ const picks = 3;
 
 const blankGuess = { name: null, colour: null };
 
+const actions = {
+  COLOURS: 'COLOURS',
+};
 // TODO copy this to the project directly
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
@@ -56,7 +59,81 @@ const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
 };
 
+const gameStateReducer = (state, action) => {
+  console.log('gameStateReducer', state, action);
+  switch (action.type) {
+    case actions.COLOURS:
+      const colours = action.payload;
+      const nextRound = shuffle(colours).slice(0, picks);
+      const toGuess = nextRound[random(picks - 1)];
+      return { ...state, colours, nextRound, toGuess };
+
+    default:
+      throw new Error('Missing Action type');
+  }
+};
+
 const Game = (props) => {
+  const [gameState, gameStateDispatch] = useReducer(gameStateReducer, {
+    colours: [],
+    nextRound: [],
+    toGuess: blankGuess,
+  });
+  // const toGuess = {};
+  const scorecard = {};
+  // const nextRound = [];
+  const setPlayerGuess = () => {};
+
+  // Fetch the colour list
+  useEffect(() => {
+    console.log('Game: colour fetch useEffect triggered', gameState.colours);
+
+    // How can we avoid this? We know colours won't change after the first time they set. Do we us [] for the deps? that seems wrong too
+    if (gameState.colours.length > 0) {
+      console.log(`Effect called, but we already have our colours: ${gameState.colours.length}`);
+      return;
+    }
+
+    async function fetchData() {
+      const response = await fetch(languages);
+      if (!response.ok) {
+        console.error(response);
+      }
+
+      const parsed = yaml.safeLoad(await response.text());
+      const _colours = reduce(
+        parsed,
+        (acc, value, key) => {
+          // debugger;
+          if (value.color) {
+            acc.push({
+              name: key,
+              colour: value.color,
+            });
+          }
+          return acc;
+        },
+        []
+      );
+      gameStateDispatch({ type: actions.COLOURS, payload: _colours });
+    }
+    fetchData();
+  }, [gameState.colours]);
+
+  console.log('Game:return/render', gameState);
+  return (
+    <>
+      <div>
+        <Header toGuess={{}} scorecard={scorecard} />
+      </div>
+      <div className="container">
+        <ColourList colours={[]} setPlayerGuess={setPlayerGuess} />
+      </div>
+    </>
+  );
+};
+
+const GameX = (props) => {
   // ? This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
   const [colours, setColours] = useState([]);
   const [nextRound, setNextRound] = useState();
