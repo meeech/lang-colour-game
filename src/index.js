@@ -10,7 +10,7 @@ const blankGuess = { name: null, colour: null };
 
 // reducer actions
 const actions = {
-  COLOURS: 'COLOURS',
+  INIT: 'INIT',
   GUESS: 'GUESS',
 };
 
@@ -61,9 +61,17 @@ const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
 };
 
+const scUpdate = (previousScorecard, isWinner) => {
+  const correct = isWinner ? previousScorecard.correct + 1 : 0;
+  const round = isWinner ? previousScorecard.round : previousScorecard.round + 1;
+  const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
+  return { correct, round, streak };
+};
+
 const gameStateReducer = (state, action) => {
   console.log('gameStateReducer', state, action);
-  if (actions.COLOURS === action.type) {
+
+  if (actions.INIT === action.type) {
     const colours = action.payload;
     const nextRound = shuffle(colours).slice(0, picks);
     const toGuess = nextRound[random(picks - 1)];
@@ -76,7 +84,10 @@ const gameStateReducer = (state, action) => {
     const isWinner = playerGuess.name === state.toGuess.name;
     const nextRound = shuffle(colours).slice(0, picks);
     const toGuess = nextRound[random(picks - 1)];
-    return { ...state, nextRound, toGuess, isWinner };
+
+    const scorecard = scUpdate(state.scorecard, isWinner);
+
+    return { ...state, nextRound, toGuess, scorecard };
   }
 
   throw new Error(`Did not handle action ${action.type}`);
@@ -86,12 +97,17 @@ const Game = (props) => {
   const [gameState, gameStateDispatch] = useReducer(gameStateReducer, {
     colours: [],
     nextRound: [],
-    toGuess: blankGuess,
     playerGuess: blankGuess,
+    toGuess: blankGuess,
+    scorecard: {
+      correct: 0,
+      round: 1,
+      streak: 0,
+    },
   });
-  const scorecard = {};
 
-  // Fetch the colour list
+  // Fetch the colour list - do I need this effect?
+  // Could this just be a regular call for fetchData which then sets the state?
   useEffect(() => {
     console.log('Game: colour fetch useEffect triggered');
 
@@ -111,18 +127,14 @@ const Game = (props) => {
       const _colours = reduce(
         parsed,
         (acc, value, key) => {
-          // debugger;
           if (value.color) {
-            acc.push({
-              name: key,
-              colour: value.color,
-            });
+            acc.push({ name: key, colour: value.color });
           }
           return acc;
         },
         []
       );
-      gameStateDispatch({ type: actions.COLOURS, payload: _colours });
+      gameStateDispatch({ type: actions.INIT, payload: _colours });
     }
     fetchData();
   }, [gameState.colours]);
@@ -135,111 +147,10 @@ const Game = (props) => {
   return (
     <>
       <div>
-        <Header toGuess={gameState.toGuess} scorecard={scorecard} />
+        <Header toGuess={gameState.toGuess} scorecard={gameState.scorecard} />
       </div>
       <div className="container">
         <ColourList colours={gameState.nextRound} setPlayerGuess={setPlayerGuess} />
-      </div>
-    </>
-  );
-};
-
-const GameX = (props) => {
-  // ? This all feel a bit wrong, like i should be using a 'global' in scope so everything can take advantage here
-  const [colours, setColours] = useState([]);
-  const [nextRound, setNextRound] = useState();
-  const [playerGuess, setPlayerGuess] = useState(blankGuess);
-  const [scorecard, setScorecard] = useState({
-    round: 1,
-    correct: 0,
-    streak: 0,
-  });
-  const [toGuess, setToGuess] = useState(blankGuess);
-
-  const nextTurn = () => {
-    const _next = shuffle(colours).slice(0, picks);
-    console.log('_next', _next);
-    setNextRound(_next);
-    if (_next.length) {
-      setToGuess(_next[random(picks - 1)]);
-    }
-  };
-
-  // THis should just handle a guess
-  useEffect(() => {
-    const isWinner = toGuess.name ? toGuess === playerGuess : false;
-    if (!playerGuess.name) {
-      console.log('No guess...');
-      return;
-    }
-
-    const scUpdate = (previousScorecard) => {
-      const correct = isWinner ? previousScorecard.correct + 1 : 0;
-      const round = isWinner ? previousScorecard.round : previousScorecard.round + 1;
-      const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
-      return { correct, round, streak };
-    };
-    setScorecard(scUpdate);
-    // Setup next group to guess from
-    setPlayerGuess(blankGuess);
-    nextTurn();
-  }, [playerGuess, toGuess]);
-
-  useEffect(() => {
-    console.log('useEffect triggered');
-    async function fetchData() {
-      if (colours.length > 0) {
-        console.log(`Effect called, but we already have our colours: ${colours.length}`);
-        return colours;
-      }
-
-      const response = await fetch(languages);
-      if (!response.ok) {
-        console.error(response);
-      }
-
-      const parsed = yaml.safeLoad(await response.text());
-      return reduce(
-        parsed,
-        (acc, value, key) => {
-          // debugger;
-          if (value.color) {
-            acc.push({
-              name: key,
-              colour: value.color,
-            });
-          }
-          return acc;
-        },
-        []
-      );
-    }
-
-    fetchData()
-      .then((_colours) => {
-        setColours(_colours);
-      })
-      .then(nextTurn);
-  }, [colours]);
-
-  if (colours.length < 1) {
-    console.log('No colours, return');
-    return <></>;
-  }
-
-  if (!toGuess || !nextRound) {
-    console.log(`No toGuess ${toGuess}, no nextRound ${nextRound}`);
-    return <></>;
-  }
-
-  console.log('Main:return/render');
-  return (
-    <>
-      <div>
-        <Header toGuess={toGuess} scorecard={scorecard} />
-      </div>
-      <div className="container">
-        <ColourList colours={nextRound} setPlayerGuess={setPlayerGuess} />
       </div>
     </>
   );
