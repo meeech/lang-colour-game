@@ -6,13 +6,15 @@ import yaml from 'js-yaml';
 
 // How many colour swatches to choose from
 const picks = 3;
-
 const blankGuess = { name: null, colour: null };
 
+// reducer actions
 const actions = {
   COLOURS: 'COLOURS',
+  GUESS: 'GUESS',
 };
-// TODO copy this to the project directly
+
+// TODO copy this to the project directly?
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
@@ -61,16 +63,23 @@ const Swatch = ({ colour, onClick }) => {
 
 const gameStateReducer = (state, action) => {
   console.log('gameStateReducer', state, action);
-  switch (action.type) {
-    case actions.COLOURS:
-      const colours = action.payload;
-      const nextRound = shuffle(colours).slice(0, picks);
-      const toGuess = nextRound[random(picks - 1)];
-      return { ...state, colours, nextRound, toGuess };
-
-    default:
-      throw new Error('Missing Action type');
+  if (actions.COLOURS === action.type) {
+    const colours = action.payload;
+    const nextRound = shuffle(colours).slice(0, picks);
+    const toGuess = nextRound[random(picks - 1)];
+    return { ...state, colours, nextRound, toGuess };
   }
+
+  if (actions.GUESS === action.type) {
+    const colours = state.colours;
+    const playerGuess = action.payload;
+    const isWinner = playerGuess.name === state.toGuess.name;
+    const nextRound = shuffle(colours).slice(0, picks);
+    const toGuess = nextRound[random(picks - 1)];
+    return { ...state, nextRound, toGuess, isWinner };
+  }
+
+  throw new Error(`Did not handle action ${action.type}`);
 };
 
 const Game = (props) => {
@@ -78,15 +87,13 @@ const Game = (props) => {
     colours: [],
     nextRound: [],
     toGuess: blankGuess,
+    playerGuess: blankGuess,
   });
-  // const toGuess = {};
   const scorecard = {};
-  // const nextRound = [];
-  const setPlayerGuess = () => {};
 
   // Fetch the colour list
   useEffect(() => {
-    console.log('Game: colour fetch useEffect triggered', gameState.colours);
+    console.log('Game: colour fetch useEffect triggered');
 
     // How can we avoid this? We know colours won't change after the first time they set. Do we us [] for the deps? that seems wrong too
     if (gameState.colours.length > 0) {
@@ -120,14 +127,18 @@ const Game = (props) => {
     fetchData();
   }, [gameState.colours]);
 
+  const setPlayerGuess = (colour) => {
+    gameStateDispatch({ type: actions.GUESS, payload: colour });
+  };
+
   console.log('Game:return/render', gameState);
   return (
     <>
       <div>
-        <Header toGuess={{}} scorecard={scorecard} />
+        <Header toGuess={gameState.toGuess} scorecard={scorecard} />
       </div>
       <div className="container">
-        <ColourList colours={[]} setPlayerGuess={setPlayerGuess} />
+        <ColourList colours={gameState.nextRound} setPlayerGuess={setPlayerGuess} />
       </div>
     </>
   );
