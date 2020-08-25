@@ -61,9 +61,9 @@ const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
 };
 
-const scUpdate = (previousScorecard, isWinner) => {
+const scorecardUpdate = (previousScorecard, isWinner) => {
   const correct = isWinner ? previousScorecard.correct + 1 : 0;
-  const round = isWinner ? previousScorecard.round : previousScorecard.round + 1;
+  const round = previousScorecard.round + 1;
   const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
   return { correct, round, streak };
 };
@@ -85,7 +85,7 @@ const gameStateReducer = (state, action) => {
     const nextRound = shuffle(colours).slice(0, picks);
     const toGuess = nextRound[random(picks - 1)];
 
-    const scorecard = scUpdate(state.scorecard, isWinner);
+    const scorecard = scorecardUpdate(state.scorecard, isWinner);
 
     return { ...state, nextRound, toGuess, scorecard };
   }
