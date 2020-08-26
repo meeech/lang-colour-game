@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
 import { each, random, reduce, shuffle } from 'lodash';
 import './index.css';
@@ -111,7 +111,7 @@ const Game = (props) => {
   useEffect(() => {
     console.log('Game: colour fetch useEffect triggered');
 
-    // How can we avoid this? We know colours won't change after the first time they set. Do we us [] for the deps? that seems wrong too
+    // How can we avoid this? We know colours won't change after the first time they set. Do we use [] for the deps? that seems wrong too (based on reading)
     if (gameState.colours.length > 0) {
       console.log(`Effect called, but we already have our colours: ${gameState.colours.length}`);
       return;
