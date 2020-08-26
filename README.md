@@ -2,6 +2,8 @@
 
 Think you know your Github colours for languages? Play.
 
+Languages from https://github.com/github/linguist/blob/master/lib/linguist/languages.yml
+
 Toy project to learn React. 
 
 ## Available Scripts

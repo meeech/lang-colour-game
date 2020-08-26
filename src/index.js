@@ -14,7 +14,6 @@ const actions = {
   GUESS: 'GUESS',
 };
 
-// TODO copy this to the project directly?
 const languages = `${process.env.PUBLIC_URL}/languages.yml`;
 
 const logColour = (colour) => {
