@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
 import ReactDOM from 'react-dom';
-import { each, random, reduce, shuffle } from 'lodash';
+import { random, reduce, shuffle } from 'lodash';
 import './index.css';
 import yaml from 'js-yaml';
 
@@ -18,18 +18,45 @@ const actions = {
 const languages =
   'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
 
-// TODO how can this be changed so it subs to playerGuess?
 const logColour = (colour) => {
-  // fun easter egg
   console.log(
     `%c ${colour.name} ${colour.colour}                            `,
     `color: #000;font-weight:bold; background-color:${colour.colour}`
   );
 };
+
+const scorecardUpdate = (previousScorecard, isWinner) => {
+  const correct = isWinner ? previousScorecard.correct + 1 : 0;
+  const round = previousScorecard.round + 1;
+  const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
+  return { correct, round, streak };
+};
+
+const gameStateReducer = (state, action) => {
+  console.log('gameStateReducer', state, action);
+
+  if (actions.INIT === action.type) {
+    const colours = action.payload;
+    const nextRound = shuffle(colours).slice(0, picks);
+    const toGuess = nextRound[random(picks - 1)];
+    return { ...state, colours, nextRound, toGuess };
+  }
+
+  if (actions.GUESS === action.type) {
+    const colours = state.colours;
+    const playerGuess = action.payload;
+    const isWinner = playerGuess.name === state.toGuess.name;
+    const nextRound = shuffle(colours).slice(0, picks);
+    const toGuess = nextRound[random(picks - 1)];
+    const scorecard = scorecardUpdate(state.scorecard, isWinner);
+    return { ...state, nextRound, toGuess, scorecard };
+  }
+
+  throw new Error(`Did not handle action ${action.type}`);
+};
+
 const ColourList = ({ colours, setPlayerGuess }) => {
   console.log('ColourList...');
-  // REMOVE ME!
-  each(colours, logColour);
   const items = colours.map((colour) => (
     <Swatch
       key={colour.name}
@@ -59,38 +86,6 @@ const Header = ({ toGuess, scorecard }) => {
 
 const Swatch = ({ colour, onClick }) => {
   return <div className="swatch" style={{ backgroundColor: colour }} onClick={onClick}></div>;
-};
-
-const scorecardUpdate = (previousScorecard, isWinner) => {
-  const correct = isWinner ? previousScorecard.correct + 1 : 0;
-  const round = previousScorecard.round + 1;
-  const streak = previousScorecard.streak > correct ? previousScorecard.streak : correct;
-  return { correct, round, streak };
-};
-
-const gameStateReducer = (state, action) => {
-  console.log('gameStateReducer', state, action);
-
-  if (actions.INIT === action.type) {
-    const colours = action.payload;
-    const nextRound = shuffle(colours).slice(0, picks);
-    const toGuess = nextRound[random(picks - 1)];
-    return { ...state, colours, nextRound, toGuess };
-  }
-
-  if (actions.GUESS === action.type) {
-    const colours = state.colours;
-    const playerGuess = action.payload;
-    const isWinner = playerGuess.name === state.toGuess.name;
-    const nextRound = shuffle(colours).slice(0, picks);
-    const toGuess = nextRound[random(picks - 1)];
-
-    const scorecard = scorecardUpdate(state.scorecard, isWinner);
-
-    return { ...state, nextRound, toGuess, scorecard };
-  }
-
-  throw new Error(`Did not handle action ${action.type}`);
 };
 
 const Game = (props) => {
@@ -150,6 +145,7 @@ const Game = (props) => {
         <Header toGuess={gameState.toGuess} scorecard={gameState.scorecard} />
       </div>
       <div className="container">
+        {/* this still feels like prop drilling */}
         <ColourList colours={gameState.nextRound} setPlayerGuess={setPlayerGuess} />
       </div>
     </>
