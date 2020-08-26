@@ -1,7 +1,9 @@
 html, body {
   background-color: antiquewhite;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
   height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 .container {
@@ -15,9 +17,23 @@ html, body {
   width: 100%;
 }
 
-.to-guess {
+.header > div {
   color: #321c01;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  display: inline-block;
+}
+
+.to-guess {
   font-size: 6em;
   font-weight: bold;
+  max-width: 66%;
+  padding: 10px 20px;
+}
+
+.scorecard {
+  float: right;
+  font-size: 1.3em;
+  font-weight: bold;
+  padding: 20px 20px;
+  text-align: right;
+  vertical-align: baseline;
 }
