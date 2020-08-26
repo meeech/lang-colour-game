@@ -15,8 +15,7 @@ const actions = {
 };
 
 // TODO copy this to the project directly?
-const languages =
-  'https://raw.githubusercontent.com/github/linguist/master/lib/linguist/languages.yml';
+const languages = `${process.env.PUBLIC_URL}/languages.yml`;
 
 const logColour = (colour) => {
   console.log(
