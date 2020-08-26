@@ -1,10 +1,10 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "2108bf1e9294b9a9b4e319d08c7aeeb6",
+    "revision": "b7cc6f6a453c36cee5e423c68a96275d",
     "url": "/lang-colour-game/index.html"
   },
   {
-    "revision": "8691344fca11c5fd2bc0",
+    "revision": "162b710ab985e69cea35",
     "url": "/lang-colour-game/static/css/main.b07053dc.chunk.css"
   },
   {
@@ -16,8 +16,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/lang-colour-game/static/js/2.95fd8fbb.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "8691344fca11c5fd2bc0",
-    "url": "/lang-colour-game/static/js/main.47bb3aef.chunk.js"
+    "revision": "162b710ab985e69cea35",
+    "url": "/lang-colour-game/static/js/main.d9707d60.chunk.js"
   },
   {
     "revision": "51d500ced476e7f1dbc7",
