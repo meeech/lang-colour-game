@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/lang-colour-game/static/css/main.b07053dc.chunk.css",
-    "main.js": "/lang-colour-game/static/js/main.d9707d60.chunk.js",
-    "main.js.map": "/lang-colour-game/static/js/main.d9707d60.chunk.js.map",
+    "main.js": "/lang-colour-game/static/js/main.97f218ee.chunk.js",
+    "main.js.map": "/lang-colour-game/static/js/main.97f218ee.chunk.js.map",
     "runtime-main.js": "/lang-colour-game/static/js/runtime-main.7d0edcc7.js",
     "runtime-main.js.map": "/lang-colour-game/static/js/runtime-main.7d0edcc7.js.map",
     "static/js/2.95fd8fbb.chunk.js": "/lang-colour-game/static/js/2.95fd8fbb.chunk.js",
     "static/js/2.95fd8fbb.chunk.js.map": "/lang-colour-game/static/js/2.95fd8fbb.chunk.js.map",
     "index.html": "/lang-colour-game/index.html",
-    "precache-manifest.e0f2837267fd357eb0edf4d6634684dd.js": "/lang-colour-game/precache-manifest.e0f2837267fd357eb0edf4d6634684dd.js",
+    "precache-manifest.8026771fec060b42fca596bbe0a8338d.js": "/lang-colour-game/precache-manifest.8026771fec060b42fca596bbe0a8338d.js",
     "service-worker.js": "/lang-colour-game/service-worker.js",
     "static/css/main.b07053dc.chunk.css.map": "/lang-colour-game/static/css/main.b07053dc.chunk.css.map",
     "static/js/2.95fd8fbb.chunk.js.LICENSE.txt": "/lang-colour-game/static/js/2.95fd8fbb.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.7d0edcc7.js",
     "static/js/2.95fd8fbb.chunk.js",
     "static/css/main.b07053dc.chunk.css",
-    "static/js/main.d9707d60.chunk.js"
+    "static/js/main.97f218ee.chunk.js"
   ]
 }
